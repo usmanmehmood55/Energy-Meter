@@ -1,2 +1,8 @@
 # Energy Meter #
-Will measure power
+Will measure power.
+
+## Requirements ##
+
+## Hardware ##
+
+## To Do ##
