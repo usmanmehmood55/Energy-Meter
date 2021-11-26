@@ -8,4 +8,6 @@ Will measure power of a device as well as control it wirelessly. Currently only 
 * Relay
 
 ## To Do ##
+* Self calibration functions of current and voltage sensors
+* Refactoring of MQTT send and receive functions
 * Phase measurement
