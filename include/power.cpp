@@ -10,12 +10,18 @@ extern "C"
 mainsFilter current_filter;
 mainsFilter voltage_filter;
 lowpassFilter lowpass_filter;
+static bool filter_init = false;
 
-void setup_filter()
+/**
+ * @brief Initializes the power measurement filters. 
+ * This must be called before using get_power().
+ */
+void filters_init()
 {
 	mainsFilter_init(&current_filter);
 	mainsFilter_init(&voltage_filter);
 	lowpassFilter_init(&lowpass_filter);
+	filter_init = true;
 }
 
 /**
@@ -30,6 +36,10 @@ void setup_filter()
  */
 bool IRAM_ATTR get_power(uint16_t *filtered_power)
 {
+	if (!filter_init)
+	{
+		filters_init();
+	}
 	try
 	{
 		int16_t current = 0;

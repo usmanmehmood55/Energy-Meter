@@ -4,9 +4,10 @@
 #include <Arduino.h>
 
 /**
- * @brief Set the up filter objects.
+ * @brief Initializes the power measurement filters. 
+ * This must be called before using get_power().
  */
-void setup_filter();
+void filters_init();
 
 /**
  * @brief This function is called at a frequency of 200Hz. The mains frequency is expected

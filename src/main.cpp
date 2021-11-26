@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include "power.hpp"
 #include "board.hpp"
+#include "telem.hpp"
 
 hw_timer_t *timer = NULL;
 void setup()
@@ -13,7 +14,8 @@ void setup()
 	pinMode(CURRENT_SENSOR_PIN, INPUT);
 	pinMode(VOLTAGE_SENSOR_PIN, INPUT);
 	
-	setup_filter();
+	filters_init();
+	mqtt_init();
 
 	Serial.println("App Started");
 }
