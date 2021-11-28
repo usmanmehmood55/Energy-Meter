@@ -5,12 +5,9 @@
 hw_timer_t *timer = NULL;
 void IRAM_ATTR timerCallback()
 {
-	uint16_t filtered_power = 0;
-	if (get_power(&filtered_power))
-	{
-		// Serial.print("Filtered Power: ");
-		// Serial.println(filtered_power);
-	}
+	power _power;
+	int32_t filtered_power = 0;
+	get_power(& _power);
 }
 
 void setup()
@@ -18,7 +15,7 @@ void setup()
 	Serial.begin(115200);
 	timer = timerBegin(0, 80, true);
 	timerAttachInterrupt(timer, &timerCallback, true);
-	timerAlarmWrite(timer, 5000, true);
+	timerAlarmWrite(timer, 2000, true);
 	timerAlarmEnable(timer);
 	pinMode(CURRENT_SENSOR_PIN, INPUT);
 	pinMode(VOLTAGE_SENSOR_PIN, INPUT);
@@ -31,10 +28,5 @@ void setup()
 
 void loop()
 {
-	digitalWrite(RELAY_PIN, HIGH);
-	delay(2000);
-	Serial.println("Toggle");
 	digitalWrite(RELAY_PIN, LOW);
-	delay(2000);
-	Serial.println("Toggle");
 }
