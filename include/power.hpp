@@ -8,10 +8,13 @@ extern "C"
 {
 #include "filters/mainsFilter.h"
 #include "filters/lowpassFilter.h"
+#include "filters/lagFilter.h"
 }
 
 mainsFilter current_filter;
 mainsFilter voltage_filter;
+lagFilter current_lag_filter;
+lagFilter voltage_lag_filter;
 lowpassFilter lowpass_filter;
 static bool filter_init = false;
 
@@ -23,6 +26,8 @@ void filters_init()
 {
 	mainsFilter_init(&current_filter);
 	mainsFilter_init(&voltage_filter);
+	lagFilter_init(&current_lag_filter);
+	lagFilter_init(&voltage_lag_filter);
 	lowpassFilter_init(&lowpass_filter);
 	filter_init = true;
 }
@@ -37,7 +42,7 @@ void filters_init()
  * @return true if calculation was successful
  * @return false if calculation was unsuccessful
  */
-bool IRAM_ATTR get_power(uint16_t *filtered_power)
+bool IRAM_ATTR get_power(int32_t *filtered_power)
 {
 	if (!filter_init)
 	{
@@ -45,19 +50,35 @@ bool IRAM_ATTR get_power(uint16_t *filtered_power)
 	}
 	try
 	{
-		int16_t current = 0;
-		int16_t voltage = 0;
-		int16_t power = 0;
+		int32_t current = 0;
+		int32_t voltage = 0;
+		int32_t power = 0;
 
 		mainsFilter_put(&current_filter, analogRead(CURRENT_SENSOR_PIN));
 		mainsFilter_put(&voltage_filter, analogRead(VOLTAGE_SENSOR_PIN));
 
-		current = mainsFilter_get(&current_filter);
+		current = mainsFilter_get(&current_filter) - 1;
+		current = current >= 2 || current <= -1 ? current : 0;
 		voltage = mainsFilter_get(&voltage_filter);
 		power = current * voltage;
+		power = power >= 0 ? power : 0;
+
+		lagFilter_put(&current_lag_filter, current);
+		lagFilter_put(&voltage_lag_filter, voltage);
+		current = lagFilter_get(&current_lag_filter);
+		voltage = lagFilter_get(&voltage_lag_filter);
 
 		lowpassFilter_put(&lowpass_filter, power);
 		*filtered_power = lowpassFilter_get(&lowpass_filter);
+
+		Serial.print("C:");
+		Serial.print(current);
+		Serial.print(", V:");
+		Serial.print(voltage);
+		Serial.print(", P:");
+		Serial.print(*filtered_power);
+		Serial.println();
+
 		return true;
 	}
 	catch (...)
