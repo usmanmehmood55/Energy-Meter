@@ -5,8 +5,9 @@
 hw_timer_t *timer = NULL;
 void IRAM_ATTR timerCallback()
 {
-	int32_t filtered_power = 0;
+	Power filtered_power;
 	get_power(&filtered_power);
+	print_power(&filtered_power);
 }
 
 void setup()

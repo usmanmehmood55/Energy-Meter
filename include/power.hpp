@@ -11,6 +11,17 @@ extern "C"
 #include "filters/lagFilter.h"
 }
 
+/**
+ * @brief struct to hold the power data for the current sample.
+ */
+struct Power
+{
+	int32_t power = 0;
+	int32_t voltage = 0;
+	int32_t current = 0;
+};
+
+// filter initialization
 mainsFilter current_filter;
 mainsFilter voltage_filter;
 lagFilter current_lag_filter;
@@ -42,7 +53,7 @@ void filters_init()
  * @return true if calculation was successful
  * @return false if calculation was unsuccessful
  */
-bool IRAM_ATTR get_power(int32_t *filtered_power)
+bool IRAM_ATTR get_power(Power *filtered_power)
 {
 	if (!filter_init)
 	{
@@ -58,26 +69,23 @@ bool IRAM_ATTR get_power(int32_t *filtered_power)
 		mainsFilter_put(&voltage_filter, analogRead(VOLTAGE_SENSOR_PIN));
 
 		current = mainsFilter_get(&current_filter) - 1;
-		current = current >= 2 || current <= -1 ? current : 0;
 		voltage = mainsFilter_get(&voltage_filter);
+
+		current = current >= 2 || current <= -1 ? current : 0;
 		power = current * voltage;
 		power = power >= 0 ? power : 0;
 
 		lagFilter_put(&current_lag_filter, current);
 		lagFilter_put(&voltage_lag_filter, voltage);
+		lowpassFilter_put(&lowpass_filter, power);
+
 		current = lagFilter_get(&current_lag_filter);
 		voltage = lagFilter_get(&voltage_lag_filter);
+		power = lowpassFilter_get(&lowpass_filter);
 
-		lowpassFilter_put(&lowpass_filter, power);
-		*filtered_power = lowpassFilter_get(&lowpass_filter);
-
-		Serial.print("C:");
-		Serial.print(current);
-		Serial.print(", V:");
-		Serial.print(voltage);
-		Serial.print(", P:");
-		Serial.print(*filtered_power);
-		Serial.println();
+		filtered_power->current = current;
+		filtered_power->voltage = voltage;
+		filtered_power->power = power;
 
 		return true;
 	}
@@ -87,4 +95,21 @@ bool IRAM_ATTR get_power(int32_t *filtered_power)
 		return false;
 	}
 }
+
+/**
+ * @brief prints the power data to the serial port in C, V, P format.
+ * 
+ * @param filtered_power pointer to variable containing filtered power
+ */
+void print_power(Power *filtered_power)
+{
+	Serial.print("C:");
+	Serial.print(filtered_power->current);
+	Serial.print(", V:");
+	Serial.print(filtered_power->voltage);
+	Serial.print(", P:");
+	Serial.print(filtered_power->power);
+	Serial.println();
+}
+
 #endif
