@@ -6,11 +6,11 @@
 FIR filter designed with
  http://t-filter.appspot.com
 
-sampling frequency: 200 Hz
+sampling frequency: 500 Hz
 
 fixed point precision: 16 bits
 
-* 0 Hz - 30 Hz
+* 0 Hz - 20 Hz
   gain = 0
   desired attenuation = -40 dB
   actual attenuation = n/a
@@ -20,14 +20,14 @@ fixed point precision: 16 bits
   desired ripple = 5 dB
   actual ripple = n/a
 
-* 80 Hz - 100 Hz
+* 90 Hz - 250 Hz
   gain = 0
   desired attenuation = -40 dB
   actual attenuation = n/a
 
 */
 
-#define MAINSFILTER_TAP_NUM 27
+#define MAINSFILTER_TAP_NUM 37
 
 typedef struct
 {
@@ -40,33 +40,43 @@ void mainsFilter_put(mainsFilter *f, int input);
 int mainsFilter_get(mainsFilter *f);
 
 static int filter_taps_mains[MAINSFILTER_TAP_NUM] = {
-    38,
-    96,
-    -955,
-    -22,
-    2293,
-    -825,
-    -2038,
-    655,
-    -636,
-    2957,
-    3053,
-    -9013,
-    -1771,
-    12083,
-    -1771,
-    -9013,
-    3053,
-    2957,
-    -636,
-    655,
-    -2038,
-    -825,
-    2293,
-    -22,
-    -955,
-    96,
-    38};
+    -224,
+    -141,
+    -33,
+    94,
+    103,
+    -26,
+    -95,
+    184,
+    875,
+    1584,
+    1588,
+    366,
+    -1836,
+    -3885,
+    -4355,
+    -2506,
+    1034,
+    4468,
+    5885,
+    4468,
+    1034,
+    -2506,
+    -4355,
+    -3885,
+    -1836,
+    366,
+    1588,
+    1584,
+    875,
+    184,
+    -95,
+    -26,
+    103,
+    94,
+    -33,
+    -141,
+    -224};
 
 void mainsFilter_init(mainsFilter *f)
 {
