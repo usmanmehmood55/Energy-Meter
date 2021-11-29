@@ -38,7 +38,7 @@ void filters_init();
  * readings. Instantaneous power is calculated by multiplying the voltage and current.
  * The power is then passed through a low pass filter to get a valid RMS value.
  * 
- * @param filtered_power pointer to variable containing filtered power
+ * @param filtered_power pointer to struct containing filtered power
  * @return true if calculation was successful
  * @return false if calculation was unsuccessful
  */

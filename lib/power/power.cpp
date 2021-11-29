@@ -81,7 +81,9 @@ bool IRAM_ATTR get_power(Power *power)
 		power->current = _current;
 		power->voltage = _voltage;
 		power->power = _power;
+
 		synchronize(power);
+
 		return true;
 	}
 	catch (...)
