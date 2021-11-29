@@ -22,8 +22,8 @@ void core_1_body(void *pvParameters)
 			Power filtered_power;
 			get_power(&filtered_power);
 			print_power(&filtered_power);
+			perform_core_1_task = false;
 		}
-		perform_core_1_task = false;
 	}
 }
 
