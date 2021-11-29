@@ -8,10 +8,6 @@ Will measure power of a device as well as control it wirelessly. Currently only 
 * Relay
 
 ## To Do ##
-* The whole thing is messed up, C++ linker does not accept declarations in .hpp
-and definitions in .cpp, and the 
-[fix](https://isocpp.org/wiki/faq/templates#templates-defn-vs-decl)
-is way too complicated for me right now. The workaround is to get rid of .cpp files and put everything in .hpp files. 
 * Self calibration functions of current and voltage sensors
-* Refactoring of MQTT send and receive functions
+* Addition of MQTT to send data to a server
 * Phase measurement
