@@ -7,6 +7,31 @@ Will measure power of a device as well as control it wirelessly. Currently only 
 * Voltage Sensor - ZMPT101B
 * Relay
 
+## Folder Structure ##
+```
+|-- lib
+|   |-- board
+|   |   |-- board.h
+|   |-- lagFilter
+|   |   |-- lagFilter.h
+|   |   |-- lagFilterc
+|   |-- lowpassFilter
+|   |   |-- lowpassFilter.h
+|   |   |-- lowpassFilter.c
+|   |-- mainsFilter
+|   |   |-- mainsFilter.h
+|   |   |-- mainsFilter.c
+|   |-- power
+|   |   |-- power.hpp
+|   |   |-- power.cpp
+|-- src
+|   |-- main.cpp
+|-- .gitignore
+|-- LICENSE
+|-- platformio.ini
+|-- README.md
+
+```
 ## To Do ##
 * Test values and their underlying types in power.cpp
 * Self calibration functions of current and voltage sensors
