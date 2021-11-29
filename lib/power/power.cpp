@@ -20,32 +20,6 @@ void filters_init()
 	lagFilter_init(&current_lag_filter);
 	lagFilter_init(&voltage_lag_filter);
 	lowpassFilter_init(&lowpass_filter);
-	filter_init_done = true;
-}
-
-bool IRAM_ATTR get_power(Power *power)
-{
-	try
-	{
-		int32_t _current = 0;
-		int32_t _voltage = 0;
-		int32_t _power = 0;
-
-		filter_mains(&_voltage, &_current);
-		_power = _current * _voltage;
-		filter_power(&_power);
-
-		power->current = _current;
-		power->voltage = _voltage;
-		power->power = _power;
-		synchronize(power);
-		return true;
-	}
-	catch (...)
-	{
-		Serial.println("Error in get_power");
-		return false;
-	}
 }
 
 /**
@@ -58,9 +32,9 @@ void IRAM_ATTR filter_mains(int32_t *voltage, int32_t *current)
 {
 	mainsFilter_put(&current_filter, *current);
 	mainsFilter_put(&voltage_filter, *voltage);
-	*current = mainsFilter_get(&current_filter) - 1;
+	*current = mainsFilter_get(&current_filter) + 3;
 	*voltage = mainsFilter_get(&voltage_filter);
-	*current = *current >= 2 || *current <= -1 ? *current : 0;
+	*current = *current > 2 || *current < -1 ? *current : 0;
 }
 
 /**
@@ -87,6 +61,34 @@ void IRAM_ATTR synchronize(Power *power)
 	lagFilter_put(&voltage_lag_filter, power->voltage);
 	power->current = lagFilter_get(&current_lag_filter);
 	power->voltage = lagFilter_get(&voltage_lag_filter);
+}
+
+bool IRAM_ATTR get_power(Power *power)
+{
+	try
+	{
+		int32_t _current = 0;
+		int32_t _voltage = 0;
+		int32_t _power = 0;
+
+		_current = analogRead(CURRENT_SENSOR_PIN);
+		_voltage = analogRead(VOLTAGE_SENSOR_PIN);
+
+		filter_mains(&_voltage, &_current);
+		_power = _current * _voltage;
+		filter_power(&_power);
+
+		power->current = _current;
+		power->voltage = _voltage;
+		power->power = _power;
+		synchronize(power);
+		return true;
+	}
+	catch (...)
+	{
+		Serial.println("Error in get_power");
+		return false;
+	}
 }
 
 void IRAM_ATTR print_power(Power *filtered_power)
