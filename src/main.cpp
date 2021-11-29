@@ -15,13 +15,10 @@ void core_1_body(void *pvParameters)
 {
 	Serial.print("core_1_task running on core ");
 	Serial.println(xPortGetCoreID());
-	if (!filter_init_done)
-	{
-		filters_init();
-	}
 	Power filtered_power;
 	while (1)
 	{
+		Serial.print("");
 		if (perform_core_1_task)
 		{
 			perform_core_1_task = false;
@@ -37,7 +34,7 @@ void setup()
 
 	timer = timerBegin(0, 80, true);
 	timerAttachInterrupt(timer, &timerCallback, true);
-	timerAlarmWrite(timer, 2000, true);
+	timerAlarmWrite(timer, 1600, true);
 	timerAlarmEnable(timer);
 
 	xTaskCreatePinnedToCore(
