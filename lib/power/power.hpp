@@ -32,6 +32,11 @@ struct Power
 void filters_init();
 
 /**
+ * @brief flag to indicate if the filters have been initialized.
+ */
+bool filter_init_done = false;
+
+/**
  * @brief This function is called at a frequency of 200Hz. The mains frequency is expected
  * to be around 60 Hz. So 40 - 70 Hz bandpass filters are applied to the voltage and current
  * readings. Instantaneous power is calculated by multiplying the voltage and current.

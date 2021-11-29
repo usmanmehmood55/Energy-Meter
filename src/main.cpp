@@ -33,7 +33,6 @@ void core_1_body(void *pvParameters)
 
 void setup()
 {
-	//
 	Serial.begin(115200);
 
 	timer = timerBegin(0, 80, true);

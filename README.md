@@ -30,7 +30,6 @@ Will measure power of a device as well as control it wirelessly. Currently only 
 |-- LICENSE
 |-- platformio.ini
 |-- README.md
-
 ```
 ## To Do ##
 * Test values and their underlying types in power.cpp
