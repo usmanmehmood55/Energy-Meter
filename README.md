@@ -8,6 +8,7 @@ Will measure power of a device as well as control it wirelessly. Currently only 
 * Relay
 
 ## To Do ##
+* Test values and their underlying types in power.cpp
 * Self calibration functions of current and voltage sensors
 * Addition of MQTT to send data to a server
 * Phase measurement
