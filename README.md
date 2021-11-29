@@ -7,6 +7,30 @@ Will measure power of a device as well as control it wirelessly. Currently only 
 * Voltage Sensor - ZMPT101B
 * Relay
 
+## Folder Structure ##
+```
+|-- lib
+|   |-- board                /* Hardware difinitions for the ESP32 dev board */
+|   |   |-- board.h
+|   |-- lagFilter            /* Filter to purposefully delay voltage and current */
+|   |   |-- lagFilter.h
+|   |   |-- lagFilter.c
+|   |-- lowpassFilter        /* Filter to smoothen out and remove AC components from power */   
+|   |   |-- lowpassFilter.h
+|   |   |-- lowpassFilter.c
+|   |-- mainsFilter          /* Filter to remove DC bias and allow only AC mains frequencies */
+|   |   |-- mainsFilter.h
+|   |   |-- mainsFilter.c
+|   |-- power                /* Library to do power related calculations */
+|   |   |-- power.hpp
+|   |   |-- power.cpp
+|-- src                      /* Main code file */
+|   |-- main.cpp
+|-- .gitignore
+|-- LICENSE
+|-- platformio.ini
+|-- README.md
+```
 ## To Do ##
 * Test values and their underlying types in power.cpp
 * Self calibration functions of current and voltage sensors

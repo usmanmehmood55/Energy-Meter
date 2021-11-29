@@ -31,8 +31,9 @@ struct Power
  */
 void filters_init();
 
+
 /**
- * @brief This function is called at a frequency of 200Hz. The mains frequency is expected
+ * @brief This function is called at a frequency of 800Hz. The mains frequency is expected
  * to be around 60 Hz. So 40 - 70 Hz bandpass filters are applied to the voltage and current
  * readings. Instantaneous power is calculated by multiplying the voltage and current.
  * The power is then passed through a low pass filter to get a valid RMS value.

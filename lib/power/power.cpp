@@ -12,7 +12,6 @@ mainsFilter voltage_filter;
 lagFilter current_lag_filter;
 lagFilter voltage_lag_filter;
 lowpassFilter lowpass_filter;
-static bool filter_init = false;
 
 void filters_init()
 {
@@ -21,43 +20,68 @@ void filters_init()
 	lagFilter_init(&current_lag_filter);
 	lagFilter_init(&voltage_lag_filter);
 	lowpassFilter_init(&lowpass_filter);
-	filter_init = true;
 }
 
-bool IRAM_ATTR get_power(Power *filtered_power)
+/**
+ * @brief Applies a 40 Hz to 60 Hz bandpass filter to the mains current and voltage.
+ * 
+ * @param voltage pointer to the voltage variable
+ * @param current pointer to the current variable
+ */
+void IRAM_ATTR filter_mains(int32_t *voltage, int32_t *current)
 {
-	if (!filter_init)
-	{
-		filters_init();
-	}
+	mainsFilter_put(&current_filter, *current);
+	mainsFilter_put(&voltage_filter, *voltage);
+	*current = mainsFilter_get(&current_filter) + 3;
+	*voltage = mainsFilter_get(&voltage_filter);
+	*current = *current > 2 || *current < -1 ? *current : 0;
+}
+
+/**
+ * @brief Applies a lowpass filter with 2 Hz cutoff to the power.
+ * 
+ * @param power pointer to the power variable
+ */
+void IRAM_ATTR filter_power(int32_t *power)
+{
+	lowpassFilter_put(&lowpass_filter, *power);
+	*power = lowpassFilter_get(&lowpass_filter);
+	*power = *power >= 0 ? *power : 0;
+}
+
+/**
+ * @brief After filtering the power, this function synchronizes the current and voltage values
+ * with the power value by adding the same delay to them as power. 
+ * 
+ * @param power pointer to the power struct
+ */
+void IRAM_ATTR synchronize(Power *power)
+{
+	lagFilter_put(&current_lag_filter, power->current);
+	lagFilter_put(&voltage_lag_filter, power->voltage);
+	power->current = lagFilter_get(&current_lag_filter);
+	power->voltage = lagFilter_get(&voltage_lag_filter);
+}
+
+bool IRAM_ATTR get_power(Power *power)
+{
 	try
 	{
-		int32_t current = 0;
-		int32_t voltage = 0;
-		int32_t power = 0;
+		int32_t _current = 0;
+		int32_t _voltage = 0;
+		int32_t _power = 0;
 
-		mainsFilter_put(&current_filter, analogRead(CURRENT_SENSOR_PIN));
-		mainsFilter_put(&voltage_filter, analogRead(VOLTAGE_SENSOR_PIN));
+		_current = analogRead(CURRENT_SENSOR_PIN);
+		_voltage = analogRead(VOLTAGE_SENSOR_PIN);
 
-		current = mainsFilter_get(&current_filter) - 1;
-		voltage = mainsFilter_get(&voltage_filter);
+		filter_mains(&_voltage, &_current);
+		_power = _current * _voltage;
+		filter_power(&_power);
 
-		current = current >= 2 || current <= -1 ? current : 0;
-		power = current * voltage;
-		power = power >= 0 ? power : 0;
-
-		lagFilter_put(&current_lag_filter, current);
-		lagFilter_put(&voltage_lag_filter, voltage);
-		lowpassFilter_put(&lowpass_filter, power);
-
-		current = lagFilter_get(&current_lag_filter);
-		voltage = lagFilter_get(&voltage_lag_filter);
-		power = lowpassFilter_get(&lowpass_filter);
-
-		filtered_power->current = current;
-		filtered_power->voltage = voltage;
-		filtered_power->power = power;
-
+		power->current = _current;
+		power->voltage = _voltage;
+		power->power = _power;
+		synchronize(power);
 		return true;
 	}
 	catch (...)
@@ -67,7 +91,7 @@ bool IRAM_ATTR get_power(Power *filtered_power)
 	}
 }
 
-void print_power(Power *filtered_power)
+void IRAM_ATTR print_power(Power *filtered_power)
 {
 	Serial.print("C:");
 	Serial.print(filtered_power->current);
