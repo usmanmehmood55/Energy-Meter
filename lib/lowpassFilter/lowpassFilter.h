@@ -6,32 +6,31 @@
 FIR filter designed with
  http://t-filter.appspot.com
 
-sampling frequency: 250 Hz
+sampling frequency: 625 Hz
 
 fixed point precision: 16 bits
 
-* 0 Hz - 1 Hz
+* 0 Hz - 10 Hz
   gain = 1
   desired ripple = 5 dB
   actual ripple = n/a
 
-* 2 Hz - 125 Hz
+* 20 Hz - 312 Hz
   gain = 0
   desired attenuation = -40 dB
   actual attenuation = n/a
 
 */
 
-#define LOWPASSFILTER_TAP_NUM 317
+#define LOWPASSFILTER_TAP_NUM 81
 
-typedef struct
-{
+typedef struct {
   int history[LOWPASSFILTER_TAP_NUM];
   unsigned int last_index;
 } lowpassFilter;
 
-void lowpassFilter_init(lowpassFilter *f);
-void lowpassFilter_put(lowpassFilter *f, int input);
-int lowpassFilter_get(lowpassFilter *f);
+void lowpassFilter_init(lowpassFilter* f);
+void lowpassFilter_put(lowpassFilter* f, int input);
+int lowpassFilter_get(lowpassFilter* f);
 
 #endif
