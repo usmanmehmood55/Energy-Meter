@@ -12,7 +12,6 @@ mainsFilter voltage_filter;
 lagFilter current_lag_filter;
 lagFilter voltage_lag_filter;
 lowpassFilter lowpass_filter;
-static bool filter_init = false;
 
 void filters_init()
 {
@@ -21,15 +20,10 @@ void filters_init()
 	lagFilter_init(&current_lag_filter);
 	lagFilter_init(&voltage_lag_filter);
 	lowpassFilter_init(&lowpass_filter);
-	filter_init = true;
 }
 
 bool IRAM_ATTR get_power(Power *filtered_power)
 {
-	if (!filter_init)
-	{
-		filters_init();
-	}
 	try
 	{
 		int32_t current = 0;
