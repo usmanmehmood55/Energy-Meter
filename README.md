@@ -36,3 +36,4 @@ Will measure power of a device as well as control it wirelessly. Currently only 
 * Self calibration functions of current and voltage sensors
 * Addition of MQTT to send data to a server
 * Phase measurement
+* Investigate weird harmonics in voltage measurements as sampling rate increases
