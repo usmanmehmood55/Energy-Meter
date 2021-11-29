@@ -15,14 +15,18 @@ void core_1_body(void *pvParameters)
 {
 	Serial.print("core_1_task running on core ");
 	Serial.println(xPortGetCoreID());
+	if (!filter_init_done)
+	{
+		filters_init();
+	}
+	Power filtered_power;
 	while (1)
 	{
 		if (perform_core_1_task)
 		{
-			Power filtered_power;
+			perform_core_1_task = false;
 			get_power(&filtered_power);
 			print_power(&filtered_power);
-			perform_core_1_task = false;
 		}
 	}
 }
