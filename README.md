@@ -10,22 +10,28 @@ Will measure power of a device as well as control it wirelessly. Currently only 
 ## Folder Structure ##
 ```
 |-- lib
-|   |-- board                /* Hardware difinitions for the ESP32 dev board */
+|   |-- board ----------------> Hardware difinitions for the ESP32 dev board
 |   |   |-- board.h
-|   |-- lagFilter            /* Filter to purposefully delay voltage and current */
+|   |
+|   |-- lagFilter ------------> Filter to purposefully delay voltage and current
 |   |   |-- lagFilter.h
 |   |   |-- lagFilter.c
-|   |-- lowpassFilter        /* Filter to smoothen out and remove AC components from power */   
+|   |
+|   |-- lowpassFilter --------> Filter to smoothen out and remove AC components from power
 |   |   |-- lowpassFilter.h
 |   |   |-- lowpassFilter.c
-|   |-- mainsFilter          /* Filter to remove DC bias and allow only AC mains frequencies */
+|   |
+|   |-- mainsFilter ----------> Filter to remove DC bias and allow only AC mains frequencies
 |   |   |-- mainsFilter.h
 |   |   |-- mainsFilter.c
-|   |-- power                /* Library to do power related calculations */
+|   |
+|   |-- power ----------------> Library to do power related calculations
 |   |   |-- power.hpp
 |   |   |-- power.cpp
-|-- src                      /* Main code file */
+|
+|-- src ----------------------> Main code file
 |   |-- main.cpp
+|
 |-- .gitignore
 |-- LICENSE
 |-- platformio.ini

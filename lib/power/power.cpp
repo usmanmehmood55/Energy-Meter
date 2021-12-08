@@ -1,3 +1,15 @@
+/**
+ * @file power.cpp
+ * @author your name (usmanmehmood55@gmail.com)
+ * @brief Used to measure voltage, current and power of a device attached to 
+ * the energy meter.
+ * @version 0.1
+ * @date 2021-11-29
+ * 
+ * @copyright Copyright (c) 2021
+ * 
+ */
+
 #include "power.hpp"
 
 extern "C"
